@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class SmsDto {
 
     public record SmsRequest(
-            @NotBlank @NotEmpty String bady) {
+            @NotBlank @NotEmpty String message) {
     }
 
     public record SmsResponse(

@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class SmsFromMpesaController {
     
     @Autowired
-    private ServiceEmola serviceEmola;
+    private ServiceSms serviceSms;
 
     @PostMapping("/mpesa")
     public ResponseEntity<String> withdrawSmS(@RequestBody List<SmsRequest> smsRequest ) {
-        return ResponseEntity.status(200).body(serviceEmola.withdrawSmS(smsRequest));
+        return ResponseEntity.status(200).body(serviceSms.ServiceEmola(smsRequest));
     }
     
     @PostMapping("/emola")
-    public ResponseEntity<String> depositSmS(@RequestBody SmsRequest smsRequest ) {
-        return ResponseEntity.status(200).body(serviceEmola.depositSmS(smsRequest));
+    public ResponseEntity<String> depositSmS(@RequestBody List<SmsRequest> smsRequest ) {
+        return ResponseEntity.status(200).body(serviceSms.ServiceEmola(smsRequest));
     }
 
 
