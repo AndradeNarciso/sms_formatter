@@ -1,0 +1,33 @@
+package com.andrade.sms_formatter.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.andrade.sms_formatter.dto.SmsDto.SmsRequest;
+import com.andrade.sms_formatter.service.ServiceSmsMpesa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+@RestController
+@RequestMapping("api/v1/sms/")
+public class SmsFromMpesaController {
+    
+    @Autowired
+    private ServiceEmola serviceEmola;
+
+    @PostMapping("/mpesa")
+    public ResponseEntity<String> withdrawSmS(@RequestBody List<SmsRequest> smsRequest ) {
+        return ResponseEntity.status(200).body(serviceEmola.withdrawSmS(smsRequest));
+    }
+    
+    @PostMapping("/emola")
+    public ResponseEntity<String> depositSmS(@RequestBody SmsRequest smsRequest ) {
+        return ResponseEntity.status(200).body(serviceEmola.depositSmS(smsRequest));
+    }
+
+
+}
