@@ -15,7 +15,6 @@ import com.andrade.sms_formatter.enums.OperatorName;
 @Component
 public class SmsFormatter {
 
-    
     public static Sms emolaFormatter(SmsRequest smsRequest) {
         String bady = smsRequest.message();
 
@@ -26,7 +25,7 @@ public class SmsFormatter {
         String account = null;
         double amount = 0;
         double tax = 0;
-        Boolean isReceived=null;
+        Boolean isReceived = null;
         LocalDateTime date = null;
 
         Pattern patternSid = Pattern.compile("ID da transacao:?[\\s]*([A-Za-z0-9\\.\\-]+)", Pattern.CASE_INSENSITIVE);
@@ -34,10 +33,14 @@ public class SmsFormatter {
         if (matcherSid.find()) {
             sid = matcherSid.group(1);
         }
-        
 
-        Pattern patternName = Pattern.compile("nome:\\s+([A-Za-zÀ-ÖØ-öø-ÿ]+(?:\\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)*)",
+        Pattern patternName = Pattern.compile(
+                "(?i)nome:?" +
+                        "\\s+" +
+                        "([A-Za-zÀ-ÖØ-öø-ÿ]+(?:\\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)*)" +
+                        "\\s+(?=as\\b)",
                 Pattern.CASE_INSENSITIVE);
+
         Matcher matcherNome = patternName.matcher(bady);
         if (matcherNome.find()) {
             name = matcherNome.group(1);
@@ -59,23 +62,24 @@ public class SmsFormatter {
 
         if (bady.matches(".*\\bLevantaste\\b.*")) {
             operation = OperationType.WITHDRAWAL.name();
-            isReceived = false;
+
         }
         if (bady.matches(".*\\bTransferiste\\b.*")) {
             operation = OperationType.TRANSFER.name();
-            isReceived = false;
+
         }
         if (bady.matches(".*\\bRecebeste\\b.*Agente.*")) {
             operation = OperationType.DEPOSIT.name();
-            isReceived = true;
+
         }
         if (bady.matches(".*\\bRecebeste\\b.*conta.*")) {
             operation = OperationType.RECEIPT.name();
-            isReceived = true;
+
         }
 
         switch (operation) {
             case "WITHDRAWAL" -> {
+                isReceived = false;
                 Pattern patternAmount = Pattern.compile("Levantaste\\s+([\\d.,]+)(?=MT)", Pattern.CASE_INSENSITIVE);
                 Matcher matcherAmount = patternAmount.matcher(bady);
                 if (matcherAmount.find()) {
@@ -83,8 +87,10 @@ public class SmsFormatter {
                     raw = raw.replaceAll("\\.(?=\\d{3})", "");
                     raw = raw.replaceAll(",(?=\\d{3})", "");
                     raw = raw.replace(",", ".");
-                
+
                     amount = Double.parseDouble(raw);
+                    
+
                 }
 
                 Matcher matcherAgent = Pattern
@@ -93,9 +99,13 @@ public class SmsFormatter {
                 if (matcherAgent.find())
                     account = matcherAgent.group(1);
 
+                isReceived = false;
+                break;
+
             }
 
             case "DEPOSIT" -> {
+                isReceived = true;
                 Pattern patternAmount = Pattern.compile("Recebeste\\s+([\\d.,]+)(?=MT)", Pattern.CASE_INSENSITIVE);
                 Matcher matcherAmount = patternAmount.matcher(bady);
                 if (matcherAmount.find()) {
@@ -103,7 +113,7 @@ public class SmsFormatter {
                     raw = raw.replaceAll("\\.(?=\\d{3})", "");
                     raw = raw.replaceAll(",(?=\\d{3})", "");
                     raw = raw.replace(",", ".");
-                
+
                     amount = Double.parseDouble(raw);
                 }
                 Matcher matcherAgent = Pattern
@@ -111,9 +121,13 @@ public class SmsFormatter {
                         .matcher(bady);
                 if (matcherAgent.find())
                     account = matcherAgent.group(1);
+
+                isReceived = true;
+                break;
             }
 
             case "TRANSFER" -> {
+                isReceived = false;
                 Pattern patternAmount = Pattern.compile("Transferiste\\s+([\\d.,]+)(?=MT)", Pattern.CASE_INSENSITIVE);
                 Matcher matcherAmount = patternAmount.matcher(bady);
                 if (matcherAmount.find()) {
@@ -121,7 +135,7 @@ public class SmsFormatter {
                     raw = raw.replaceAll("\\.(?=\\d{3})", "");
                     raw = raw.replaceAll(",(?=\\d{3})", "");
                     raw = raw.replace(",", ".");
-                
+
                     amount = Double.parseDouble(raw);
                 }
 
@@ -130,10 +144,12 @@ public class SmsFormatter {
                 if (matcherAccount.find()) {
                     account = matcherAccount.group(1);
                 }
-
+                isReceived = false;
+                break;
             }
 
             case "RECEIPT" -> {
+                isReceived = true;
                 Pattern patternAmount = Pattern.compile("Recebeste\\s+([\\d.,]+)(?=MT)", Pattern.CASE_INSENSITIVE);
                 Matcher matcherAmount = patternAmount.matcher(bady);
                 if (matcherAmount.find()) {
@@ -141,29 +157,31 @@ public class SmsFormatter {
                     raw = raw.replaceAll("\\.(?=\\d{3})", "");
                     raw = raw.replaceAll(",(?=\\d{3})", "");
                     raw = raw.replace(",", ".");
-                
+
                     amount = Double.parseDouble(raw);
                 }
-                Matcher matcherAccount = Pattern.compile("de\\s+conta\\s+(\\d+)", Pattern.CASE_INSENSITIVE).matcher(bady);
+                Matcher matcherAccount = Pattern.compile("de\\s+conta\\s+(\\d+)", Pattern.CASE_INSENSITIVE)
+                        .matcher(bady);
                 if (matcherAccount.find())
                     account = matcherAccount.group(1);
+
+                isReceived = true;
+                break;
             }
 
-            default -> throw new AssertionError();
         }
 
-       
         return Sms.builder()
-        .operatorName(operatorName)
-        .sid(sid)
-        .name(name)
-        .account(account)
-        .amount(amount)
-        .tax(tax)
-        .isReceived(isReceived)
-        .date(date)
-        .operation(OperationType.valueOf(operation))
-        .build();
+                .operatorName(operatorName)
+                .sid(sid)
+                .name(name)
+                .account(account)
+                .amount(amount)
+                .tax(tax)
+                .isReceived(isReceived)
+                .date(date)
+                .operation(OperationType.valueOf(operation))
+                .build();
 
     }
 
