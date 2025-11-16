@@ -4,7 +4,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.andrade.sms_formatter.dto.SmsDto.SmsRequest;
-import com.andrade.sms_formatter.service.ServiceSmsMpesa;
+import com.andrade.sms_formatter.dto.SmsDto.SmsResponse;
+import com.andrade.sms_formatter.service.ServiceSms;
+
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +24,13 @@ public class SmsFromMpesaController {
     private ServiceSms serviceSms;
 
     @PostMapping("/mpesa")
-    public ResponseEntity<String> withdrawSmS(@RequestBody List<SmsRequest> smsRequest ) {
-        return ResponseEntity.status(200).body(serviceSms.ServiceEmola(smsRequest));
+    public ResponseEntity<List<SmsResponse>> withdrawSmS(@RequestBody List<SmsRequest> smsRequest ) {
+        return ResponseEntity.status(200).body(serviceSms.saveAndReturnResponseServiceToEmola(smsRequest));
     }
     
     @PostMapping("/emola")
-    public ResponseEntity<String> depositSmS(@RequestBody List<SmsRequest> smsRequest ) {
-        return ResponseEntity.status(200).body(serviceSms.ServiceEmola(smsRequest));
+    public ResponseEntity<List<SmsResponse>> depositSmS(@RequestBody List<SmsRequest> smsRequest ) {
+        return ResponseEntity.status(200).body(serviceSms.saveAndReturnResponseServiceToEmola(smsRequest));
     }
 
 

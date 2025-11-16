@@ -4,23 +4,24 @@ import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@NoArgsConstructor
+@AllArgsConstructor
 public class SmsDto {
 
-    public record SmsRequest(
-            @NotBlank @NotEmpty String message) {
-    }
+        public record SmsRequest(
+                        @NotBlank @NotEmpty String message) {
+        }
 
-    public record SmsResponse(
-            String sid,
-            String name,
-            String account,
-            double amount,
-            double tax,
-            boolean isReceived,
-            LocalDateTime date) {
+        public record SmsResponse(
+                        String operation,
+                        String sid,
+                        String name,
+                        String account,
+                        double amount,
+                        double tax,
+                        boolean isReceived,
+                        LocalDateTime date) {
 
-    }
+        }
 }

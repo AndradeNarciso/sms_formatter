@@ -1,5 +1,8 @@
-package com.andrade.sms_formatter.enum;
+package com.andrade.sms_formatter.enums;
 
-public class OperationType {
-    
+public enum OperationType {
+    WITHDRAWAL,     
+    TRANSFER,       
+    DEPOSIT,        
+    RECEIPT         
 }

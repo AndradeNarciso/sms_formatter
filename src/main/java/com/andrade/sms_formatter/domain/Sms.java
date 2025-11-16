@@ -11,20 +11,24 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "sms")
+
+@Builder
 public class Sms {
     @Id
     @GeneratedValue
     private UUID id;
+    private String operatorName;
     private String sid;
     private String name;
     private String account;
-    private int amount;
-    private float tax;
+    private double amount;
+    private double tax;
     private boolean isReceived;
     private LocalDateTime date;
 
