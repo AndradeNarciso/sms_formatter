@@ -19,7 +19,7 @@ public class SmsFormatterUtil {
         String bady = smsRequest.message();
 
         String operatorName = OperatorName.MOVITEL.name();
-        String operation = "";
+        String operation =null;
         String sid = null;
         String name = null;
         String account = null;
@@ -72,6 +72,11 @@ public class SmsFormatterUtil {
         } else if (bady.matches(".*\\bRecebeste\\b.*conta.*")) {
             operation = OperationType.RECEPCAO.name();
 
+        }
+
+
+        if (operation == null) {
+            return null;
         }
 
         switch (operation) {
@@ -168,6 +173,7 @@ public class SmsFormatterUtil {
                 }
 
                 isReceived = false;
+                
                 break;
             }
 

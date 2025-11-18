@@ -5,7 +5,12 @@ import java.time.ZoneOffset;
 
 public class TImeUtil {
 
-     public static Long toEpochSeconds(LocalDateTime dateTime) {
-        return dateTime.toEpochSecond(ZoneOffset.UTC);}
-    
+        public static Long toEpochSeconds(LocalDateTime dateTime) {
+                if (dateTime != null) {
+                        return dateTime.toEpochSecond(ZoneOffset.UTC);
+                }
+
+                return null;
+        }
+
 }

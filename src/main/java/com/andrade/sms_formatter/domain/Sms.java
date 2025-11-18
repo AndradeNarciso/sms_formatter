@@ -1,6 +1,5 @@
 package com.andrade.sms_formatter.domain;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.andrade.sms_formatter.enums.OperationType;
@@ -11,14 +10,18 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "sms")
 
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Sms {
     @Id
     @GeneratedValue
