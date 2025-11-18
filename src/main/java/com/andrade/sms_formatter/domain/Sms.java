@@ -30,7 +30,7 @@ public class Sms {
     private Double amount;
     private Double tax;
     private Boolean isReceived;
-    private LocalDateTime date;
+    private Long date;
 
     @Enumerated(EnumType.STRING)
     private OperationType operation;

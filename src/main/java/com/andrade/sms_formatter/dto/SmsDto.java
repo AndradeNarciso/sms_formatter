@@ -21,7 +21,7 @@ public class SmsDto {
                         double amount,
                         double tax,
                         boolean isReceived,
-                        LocalDateTime date) {
+                        Long date) {
 
         }
 }

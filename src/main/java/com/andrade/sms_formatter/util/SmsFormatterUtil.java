@@ -13,7 +13,7 @@ import com.andrade.sms_formatter.enums.OperationType;
 import com.andrade.sms_formatter.enums.OperatorName;
 
 @Component
-public class SmsFormatter {
+public class SmsFormatterUtil {
 
     public Sms emolaFormatter(SmsRequest smsRequest) {
         String bady = smsRequest.message();
@@ -26,7 +26,7 @@ public class SmsFormatter {
         Double amount = null;
         Double tax = null;
         Boolean isReceived = null;
-        LocalDateTime date = null;
+        LocalDateTime timeStamp = null;
 
         Pattern patternSid = Pattern.compile("ID da transacao:?[\\s]*([A-Za-z0-9\\.\\-]+)", Pattern.CASE_INSENSITIVE);
         Matcher matcherSid = patternSid.matcher(bady);
@@ -57,7 +57,7 @@ public class SmsFormatter {
 
             String dateStr = dateCatch + " " + hour;
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-            date = LocalDateTime.parse(dateStr, formatter);
+            timeStamp= LocalDateTime.parse(dateStr, formatter);
         }
 
         if (bady.matches(".*\\bLevantaste\\b.*")) {
@@ -202,7 +202,7 @@ public class SmsFormatter {
                 .amount(amount)
                 .tax(tax)
                 .isReceived(isReceived)
-                .date(date)
+                .date(TImeUtil.toEpochSeconds(timeStamp))
                 .operation(OperationType.valueOf(operation))
                 .build();
 

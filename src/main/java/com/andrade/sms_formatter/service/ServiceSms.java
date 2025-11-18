@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import com.andrade.sms_formatter.dto.SmsDto.SmsRequest;
 import com.andrade.sms_formatter.dto.SmsDto.SmsResponse;
 import com.andrade.sms_formatter.mapper.SmsMapper;
-import com.andrade.sms_formatter.util.SmsFormatter;
+import com.andrade.sms_formatter.util.SmsFormatterUtil;
 
 @Service
 public class ServiceSms {
 
     @Autowired
-    private SmsFormatter smsFormatter;
+    private SmsFormatterUtil smsFormatter;
     @Autowired
     private SmsMapper smsMapper;
 
