@@ -27,9 +27,9 @@ public class Sms {
     private String sid;
     private String name;
     private String account;
-    private double amount;
-    private double tax;
-    private boolean isReceived;
+    private Double amount;
+    private Double tax;
+    private Boolean isReceived;
     private LocalDateTime date;
 
     @Enumerated(EnumType.STRING)

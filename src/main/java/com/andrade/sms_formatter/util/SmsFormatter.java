@@ -15,7 +15,7 @@ import com.andrade.sms_formatter.enums.OperatorName;
 @Component
 public class SmsFormatter {
 
-    public static Sms emolaFormatter(SmsRequest smsRequest) {
+    public Sms emolaFormatter(SmsRequest smsRequest) {
         String bady = smsRequest.message();
 
         String operatorName = OperatorName.MOVITEL.name();
@@ -23,8 +23,8 @@ public class SmsFormatter {
         String sid = null;
         String name = null;
         String account = null;
-        double amount = 0;
-        double tax = 0;
+        Double amount = null;
+        Double tax = null;
         Boolean isReceived = null;
         LocalDateTime date = null;
 
@@ -61,24 +61,21 @@ public class SmsFormatter {
         }
 
         if (bady.matches(".*\\bLevantaste\\b.*")) {
-            operation = OperationType.WITHDRAWAL.name();
+            operation = OperationType.LEVANTAMENTO.name();
 
-        }
-        if (bady.matches(".*\\bTransferiste\\b.*")) {
-            operation = OperationType.TRANSFER.name();
+        } else if (bady.matches(".*\\bTransferiste\\b.*")) {
+            operation = OperationType.TRANSFERENCIA.name();
 
-        }
-        if (bady.matches(".*\\bRecebeste\\b.*Agente.*")) {
-            operation = OperationType.DEPOSIT.name();
+        } else if (bady.matches(".*\\bRecebeste\\b.*Agente.*")) {
+            operation = OperationType.DEPOSITO.name();
 
-        }
-        if (bady.matches(".*\\bRecebeste\\b.*conta.*")) {
-            operation = OperationType.RECEIPT.name();
+        } else if (bady.matches(".*\\bRecebeste\\b.*conta.*")) {
+            operation = OperationType.RECEPCAO.name();
 
         }
 
         switch (operation) {
-            case "WITHDRAWAL" -> {
+            case "LEVANTAMENTO" -> {
                 isReceived = false;
                 Pattern patternAmount = Pattern.compile("Levantaste\\s+([\\d.,]+)(?=MT)", Pattern.CASE_INSENSITIVE);
                 Matcher matcherAmount = patternAmount.matcher(bady);
@@ -89,7 +86,6 @@ public class SmsFormatter {
                     raw = raw.replace(",", ".");
 
                     amount = Double.parseDouble(raw);
-                    
 
                 }
 
@@ -100,11 +96,24 @@ public class SmsFormatter {
                     account = matcherAgent.group(1);
 
                 isReceived = false;
+
+                Pattern patternTax = Pattern.compile("(?i)Taxa:\\s*([\\d.,]+)\\s*MT");
+                Matcher matcherTax = patternTax.matcher(bady);
+
+                if (matcherTax.find()) {
+                    String raw = matcherTax.group(1);
+
+                    raw = raw.replaceAll("\\.(?=\\d{3})", "");
+                    raw = raw.replaceAll(",(?=\\d{3})", "");
+                    raw = raw.replace(",", ".");
+
+                    tax = Double.parseDouble(raw);
+                }
                 break;
 
             }
 
-            case "DEPOSIT" -> {
+            case "DEPOSITO" -> {
                 isReceived = true;
                 Pattern patternAmount = Pattern.compile("Recebeste\\s+([\\d.,]+)(?=MT)", Pattern.CASE_INSENSITIVE);
                 Matcher matcherAmount = patternAmount.matcher(bady);
@@ -126,7 +135,7 @@ public class SmsFormatter {
                 break;
             }
 
-            case "TRANSFER" -> {
+            case "TRANSFERENCIA" -> {
                 isReceived = false;
                 Pattern patternAmount = Pattern.compile("Transferiste\\s+([\\d.,]+)(?=MT)", Pattern.CASE_INSENSITIVE);
                 Matcher matcherAmount = patternAmount.matcher(bady);
@@ -144,11 +153,25 @@ public class SmsFormatter {
                 if (matcherAccount.find()) {
                     account = matcherAccount.group(1);
                 }
+
+                Pattern patternTax = Pattern.compile("(?i)Taxa:\\s*([\\d.,]+)\\s*MT");
+                Matcher matcherTax = patternTax.matcher(bady);
+
+                if (matcherTax.find()) {
+                    String raw = matcherTax.group(1);
+
+                    raw = raw.replaceAll("\\.(?=\\d{3})", "");
+                    raw = raw.replaceAll(",(?=\\d{3})", "");
+                    raw = raw.replace(",", ".");
+
+                    tax = Double.parseDouble(raw);
+                }
+
                 isReceived = false;
                 break;
             }
 
-            case "RECEIPT" -> {
+            case "RECEPCAO" -> {
                 isReceived = true;
                 Pattern patternAmount = Pattern.compile("Recebeste\\s+([\\d.,]+)(?=MT)", Pattern.CASE_INSENSITIVE);
                 Matcher matcherAmount = patternAmount.matcher(bady);
