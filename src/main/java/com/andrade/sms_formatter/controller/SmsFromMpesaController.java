@@ -25,7 +25,7 @@ public class SmsFromMpesaController {
 
     @PostMapping("/mpesa")
     public ResponseEntity<List<SmsResponse>> withdrawSmS(@RequestBody List<SmsRequest> smsRequest ) {
-        return ResponseEntity.status(200).body(serviceSms.saveAndReturnResponseServiceToEmola(smsRequest));
+        return ResponseEntity.status(200).body(serviceSms.saveAndReturnResponseServiceToMpesa(smsRequest));
     }
     
     @PostMapping("/emola")

@@ -13,7 +13,6 @@ import com.andrade.sms_formatter.dto.SmsDto.SmsResponse;
 import com.andrade.sms_formatter.mapper.SmsMapper;
 import com.andrade.sms_formatter.util.SmsFormatterUtil;
 
-
 @Service
 public class ServiceSms {
 
@@ -30,27 +29,48 @@ public class ServiceSms {
         }
 
         return listFormatted.stream()
-        .filter(r -> r != null)                     
-        .filter(smsResponse -> {
-            for (Field field : smsResponse.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                try {
-                    if (field.get(smsResponse) == null) {
-                        return false;
+                .filter(r -> r != null)
+                .filter(smsResponse -> {
+                    for (Field field : smsResponse.getClass().getDeclaredFields()) {
+                        field.setAccessible(true);
+                        try {
+                            if (field.get(smsResponse) == null) {
+                                return false;
+                            }
+                        } catch (IllegalAccessException e) {
+                            System.err.println("There is a problem at acessing mpesa field");
+                        }
                     }
-                } catch (IllegalAccessException e) {
-                    System.err.println("There is a problem at acessing mpesa field");
-                }
-            }
-            return true;
-        })
-        .collect(Collectors.toList());
-
+                    return true;
+                })
+                .collect(Collectors.toList());
 
     }
 
+    public List<SmsResponse> saveAndReturnResponseServiceToMpesa(List<SmsRequest> smsRequests) {
+        List<SmsResponse> listFormatted = new ArrayList<>();
 
+        for (SmsRequest sms : smsRequests) {
+            listFormatted.add(smsMapper.toDto(smsFormatter.mpesaFormatter(sms)));
+        }
 
+        return listFormatted.stream()
+                .filter(r -> r != null)
+                .filter(smsResponse -> {
+                    for (Field field : smsResponse.getClass().getDeclaredFields()) {
+                        field.setAccessible(true);
+                        try {
+                            if (field.get(smsResponse) == null) {
+                                return false;
+                            }
+                        } catch (IllegalAccessException e) {
+                            System.err.println("There is a problem at acessing mpesa field");
+                        }
+                    }
+                    return true;
+                })
+                .collect(Collectors.toList());
 
+    }
 
 }
