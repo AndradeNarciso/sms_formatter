@@ -2,8 +2,6 @@ package com.andrade.sms_formatter.util;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -237,9 +235,8 @@ public class SmsFormatterUtil {
             sid = matcherSid.group(1);
         }
         Pattern patternDateTime = Pattern.compile(
-            "aos?\\s*(\\d{1,2}/\\d{1,2}/\\d{2})\\s+as\\s*(\\d{1,2}:\\d{2}\\s*(AM|PM))",
-            Pattern.CASE_INSENSITIVE
-        );
+                "aos?\\s*(\\d{1,2}/\\d{1,2}/\\d{2})\\s+as\\s*(\\d{1,2}:\\d{2}\\s*(AM|PM))",
+                Pattern.CASE_INSENSITIVE);
 
         Matcher matcher = patternDateTime.matcher(body);
 
@@ -247,11 +244,8 @@ public class SmsFormatterUtil {
             String datePart = matcher.group(1);
             String timePart = matcher.group(2);
 
-            // Formatter simplificado que aceita 1 ou 2 dígitos e AM/PM
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yy h:mm a", Locale.ENGLISH);
-
-            // Parse correto, LocalDateTime já armazena hora em 24h internamente
-            timeStamp=LocalDateTime.parse(datePart + " " + timePart, formatter);
+            timeStamp = LocalDateTime.parse(datePart + " " + timePart, formatter);
         }
 
         Pattern patternOperation = Pattern.compile("(?i)(Levantaste|Transferiste|Depositaste|Recebeste)");
