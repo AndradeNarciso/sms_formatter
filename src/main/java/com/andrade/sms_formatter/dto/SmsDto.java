@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -19,6 +20,8 @@ public class SmsDto {
                         String name,
                         String account,
                         double amount,
+                        
+                        @Positive
                         double tax,
                         boolean isReceived,
                         Long date) {

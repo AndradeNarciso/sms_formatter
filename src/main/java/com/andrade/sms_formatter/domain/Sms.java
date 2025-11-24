@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +31,11 @@ public class Sms {
     private String sid;
     private String name;
     private String account;
+
+    @Positive
     private Double amount;
+    
+    @Positive
     private Double tax;
     private Boolean isReceived;
     private Long date;
